@@ -1,7 +1,9 @@
 import { Flex, Paper } from "@mantine/core";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData, useSearchParams } from "@remix-run/react";
+import { videoService } from "~/backend/video-stream.server";
 import UserVideoGrid from "~/components/user-grid/user-grid";
+import UserSelectedVideo from "~/components/user-selected-video.tsx/user-selected-video";
 
 
 export async function loader({
@@ -11,7 +13,15 @@ export async function loader({
   const searchParams = new URLSearchParams(request.url.split('?')[1]);
   const userName = searchParams.get('userName') || "";
 
-  return json({userName: userName});
+  // get the video sources
+  const videoSources = await videoService.getVideoSources();
+
+  let selectedVideoSource;
+  if (userName) {
+    selectedVideoSource = videoSources.find((source) => source.userName === userName);
+  }
+
+  return json({ userName, videoSources, selectedVideoSource });
 }
 
 
@@ -48,7 +58,7 @@ export default function ProctorPage() {
         {/* Top Left */}
         <Paper
           style={{
-            flex: 2,
+            flex: 4,
             // borderBottom: `20px solid ${theme.colors.grey4[1]}`,
             minHeight: 0,
           }}
@@ -57,7 +67,7 @@ export default function ProctorPage() {
           m="sm"
           p="md"
         >
-          Left Top
+          <UserSelectedVideo selectedVideoSource={data.selectedVideoSource} />
         </Paper>
         {/* Bottom Left */}
         <Paper
@@ -71,7 +81,11 @@ export default function ProctorPage() {
           m="sm"
           p="md"
         >
-          <UserVideoGrid selectedUserName={data.userName} onUserSelect={onUserSelect}/>
+          <UserVideoGrid
+            selectedUserName={data.userName}
+            onUserSelect={onUserSelect}
+            videoSources={data.videoSources}
+          />
         </Paper>
       </Flex>
 
@@ -83,7 +97,7 @@ export default function ProctorPage() {
         {/* Top Right */}
         <Paper
           style={{
-            flex: 1,
+            flex: 5,
             // borderBottom: `20px solid ${theme.colors.grey4[1]}`,
             minHeight: 0,
           }}
@@ -96,7 +110,7 @@ export default function ProctorPage() {
         </Paper>
         {/* Bottom Right */}
         <Paper
-          style={{ flex: 1, minHeight: 0 }}
+          style={{ flex: 3, minHeight: 0 }}
           radius="10px"
           bg="orangeLight"
           m="sm"

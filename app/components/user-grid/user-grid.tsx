@@ -1,13 +1,15 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { Badge, Flex, Grid, GridProps, Group, Paper, ScrollArea, useMantineTheme, Text, Button } from '@mantine/core';
 import classes from './user-grid.module.css';
+import { VideoSource } from '~/types';
 
 type UserGridProps = {
   selectedUserName?: string;
   onUserSelect: (userName: string) => void;
+  videoSources: VideoSource[];
 } & GridProps;
 
-export default function UserVideoGrid({ selectedUserName, onUserSelect, ...props }: UserGridProps) {
+export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSources, ...props }: UserGridProps) {
   const theme = useMantineTheme();
 
   return (
@@ -21,12 +23,11 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, ...props
               bg={user.cheatCurrently ? 'redLight' : 'white'}
               withBorder
               style={{
-                border: `1px solid ${theme.colors.grey4[1]}`,
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 minHeight: 0,
-                boxShadow: user.userName === selectedUserName ? '0 0 0 2px blue' : 'none',
+                border: user.userName === selectedUserName ? `3px solid ${theme.colors.blue[1]}` : `1px solid ${theme.colors.grey4[1]}`,
               }}
             >
               {/* Flex container to arrange videos side by side */}
@@ -97,118 +98,3 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, ...props
     </ScrollArea >
   );
 }
-
-const videoSources = [
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Conrad Khakria',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Anatoly Karazhnev',
-    cheatCount: 2,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Diya Bilal',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Karsyn Morton',
-    cheatCount: 7,
-    cheatCurrently: true,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Xander Giles',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Harleigh Castro',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Aliza O’Connor',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Amayah Ayers',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Jaxon Lee',
-    cheatCount: 1,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Ava Smith',
-    cheatCount: 3,
-    cheatCurrently: true,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Liam Johnson',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Emma Williams',
-    cheatCount: 2,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Noah Brown',
-    cheatCount: 5,
-    cheatCurrently: true,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Olivia Jones',
-    cheatCount: 0,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'William Garcia',
-    cheatCount: 5,
-    cheatCurrently: false,
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Sophia Martinez',
-    cheatCount: 0,
-    cheatCurrently: false,
-  }
-];

@@ -11,6 +11,7 @@ const generateColorArray = (color: string): ColorArray => {
 export const theme = createTheme({
   colors: {
     white: generateColorArray('#FFFFFF'),
+    blue: generateColorArray('#238be6'),
     grey1: generateColorArray("#e9ecef"),
     grey4: generateColorArray("#adb5bd"),
     grey6: generateColorArray("#495057"),
