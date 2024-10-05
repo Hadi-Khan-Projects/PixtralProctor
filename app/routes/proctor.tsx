@@ -1,10 +1,37 @@
 import { Flex, Paper } from "@mantine/core";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { json, useLoaderData, useSearchParams } from "@remix-run/react";
 import UserVideoGrid from "~/components/user-grid/user-grid";
 
+
+export async function loader({
+  request,
+}: LoaderFunctionArgs) {
+  // get the userName from searchParams
+  const searchParams = new URLSearchParams(request.url.split('?')[1]);
+  const userName = searchParams.get('userName') || "";
+
+  return json({userName: userName});
+}
+
+
 export default function ProctorPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const data = useLoaderData<typeof loader>();
+
+  const onUserSelect = (userName: string) => {
+    if (userName === data.userName) {
+      searchParams.delete('userName');
+      setSearchParams(searchParams);
+    } else {
+      searchParams.set('userName', userName);
+      setSearchParams(searchParams);
+    }
+  };
+
   // Two Columns, Two Rows in each column
-  // row1:row2 = 1:2
-  // row1col1:row1col2 = 2:1
+  // row1:row2 = 2:1
+  // row1col1:row1col2 = 2:5
   // row2col1:row2col2 = 1:1
 
   return (
@@ -21,7 +48,7 @@ export default function ProctorPage() {
         {/* Top Left */}
         <Paper
           style={{
-            flex: 1,
+            flex: 2,
             // borderBottom: `20px solid ${theme.colors.grey4[1]}`,
             minHeight: 0,
           }}
@@ -35,7 +62,7 @@ export default function ProctorPage() {
         {/* Bottom Left */}
         <Paper
           style={{
-            flex: 2,
+            flex: 5,
             minHeight: 0,
             overflow: 'hidden', // Prevent content from affecting layout
           }}
@@ -44,7 +71,7 @@ export default function ProctorPage() {
           m="sm"
           p="md"
         >
-          <UserVideoGrid />
+          <UserVideoGrid selectedUserName={data.userName} onUserSelect={onUserSelect}/>
         </Paper>
       </Flex>
 

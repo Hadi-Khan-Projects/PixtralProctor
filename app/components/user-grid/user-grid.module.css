@@ -1,0 +1,4 @@
+.root {
+  --button-height: 1.25rem !important;
+  border-radius: 8px;
+}
