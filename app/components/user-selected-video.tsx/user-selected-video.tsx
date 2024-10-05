@@ -7,24 +7,31 @@ import {
   PaperProps,
   Text,
   Button,
+  Center,
+  useMantineTheme,
 } from "@mantine/core";
 import { VideoSource } from "~/types";
+import { IconPointer } from "@tabler/icons-react";
 
 type UserSelectedVideoProps = {
   selectedVideoSource?: VideoSource;
+  onDeselectUser: () => void;
 } & PaperProps;
 
 export default function UserSelectedVideo({
   selectedVideoSource,
+  onDeselectUser,
   ...props
 }: UserSelectedVideoProps) {
+  const theme = useMantineTheme();
 
   return selectedVideoSource ? (
     <Paper
       radius="8px"
-      p="xs"
-      bg={selectedVideoSource.cheatCurrently ? "redLight" : "white"}
+      p="md"
+      bg={selectedVideoSource.cheatCurrently ? "redLight" : "grey1"}
       withBorder
+      bd="4px solid blue"
       style={{
         height: "100%",
         display: "flex",
@@ -36,7 +43,7 @@ export default function UserSelectedVideo({
       {/* Flex container to arrange videos side by side */}
       <Flex
         direction="row"
-        gap="xs"
+        gap="md"
         style={{
           width: "100%",
           boxSizing: "border-box",
@@ -69,11 +76,12 @@ export default function UserSelectedVideo({
           }}
         />
       </Flex>
-      <Flex direction="row" pt="0.4em" justify="space-between">
+      <Flex direction="row" pt="0.8em" justify="space-between">
         <Button
           size="md"
           radius="8px"
           color="blue"
+          onClick={onDeselectUser}
         >
           {selectedVideoSource.userName}
         </Button>
@@ -88,8 +96,8 @@ export default function UserSelectedVideo({
               selectedVideoSource.cheatCount > 4
                 ? "red"
                 : selectedVideoSource.cheatCount > 0
-                ? "yellow"
-                : "green"
+                  ? "yellow"
+                  : "green"
             }
           >
             {selectedVideoSource.cheatCount}
@@ -101,8 +109,7 @@ export default function UserSelectedVideo({
     <Paper
       radius="8px"
       p="xs"
-      bg="gray"
-      withBorder
+      bg="grey1"
       style={{
         height: "100%",
         display: "flex",
@@ -110,10 +117,17 @@ export default function UserSelectedVideo({
         minHeight: 0,
       }}
       {...props}
+      withBorder
+      bd="1px solid grey4"
     >
-      <Text size="xl">
-        Select a user to view their video
-      </Text>
+      <Center style={{ flex: 1 }}>
+        <Group>
+          <IconPointer color={theme.colors.blue[1]} size="1.8rem"/>
+          <Text size="1.5rem" c="blue" fw={700}>
+            Select a user to view their video
+          </Text>
+        </Group>
+      </Center>
     </Paper>
   );
 }

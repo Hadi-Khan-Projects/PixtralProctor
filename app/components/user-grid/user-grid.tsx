@@ -20,7 +20,7 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
             <Paper
               radius="8px"
               p="xs"
-              bg={user.cheatCurrently ? 'redLight' : 'white'}
+              bg={user.cheatCurrently ? 'redLight' : 'grey1'}
               withBorder
               style={{
                 height: '100%',

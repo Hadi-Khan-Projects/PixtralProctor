@@ -23,7 +23,7 @@ export default function Index() {
   return (
     <Flex direction="column" style={{ height: '100vh' }}>
       <Flex direction="column" justify="center" align="center" style={{ flex: 3 }}>
-        <Title order={1}>Welcome to PixtralProctor</Title>
+        <Title order={1}>Welcome to Pixtral Proctor</Title>
       </Flex>
       <Flex justify="center" align="center" style={{ flex: 1 }}>
         <Button size="xl" onClick={handleUserClick} style={{ marginRight: '10px' }}>User</Button>
