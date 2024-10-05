@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { theme } from "~/theme";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="light" forceColorScheme="light" theme={theme}>{children}</MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
