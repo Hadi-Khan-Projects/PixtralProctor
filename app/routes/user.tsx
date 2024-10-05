@@ -1,173 +1,118 @@
-import React, { useRef, useEffect, useState } from "react";
-import { useLoaderData } from '@remix-run/react';
-import { io, Socket } from 'socket.io-client';
+import { Flex, Paper } from "@mantine/core";
+import { useEffect, useRef, useState } from "react";
+import { getWebcamStream, getScreenStream, captureFrame, uploadCapturedData } from "./utils";
 
-export default function ScreenRecord() {
-  const serverUrl = "http://localhost:4000";
-  const screenRecorder = useScreenRecorder(serverUrl);
-  const webcamRecorder = useWebcamRecorder(serverUrl);
+export default function Proctoring() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const screenRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [webcamStream, setWebcamStream] = useState<MediaStream | null>(null);
+  const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
+
+  useEffect(() => {
+    async function initStreams() {
+      const webcam = await getWebcamStream(videoRef.current);
+      const screen = await getScreenStream(screenRef.current);
+      setWebcamStream(webcam);
+      setScreenStream(screen);
+    }
+
+    initStreams();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      captureFrame(videoRef.current, screenRef.current, canvasRef.current, (blob) => {
+        uploadCapturedData(blob);
+      });
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, [webcamStream, screenStream]);
 
   return (
-    <div>
-      <h1>Screen Recording Page</h1>
-      <video ref={screenRecorder.videoRef} width="640" height="360" controls autoPlay />
-      <div>
-        {!screenRecorder.isRecording ? (
-          <button onClick={screenRecorder.startRecording}>Start Recording</button>
-        ) : (
-          <button onClick={screenRecorder.stopRecording}>Stop Recording</button>
-        )}
-      </div>
-      <video ref={webcamRecorder.videoRef} width="640" height="360" controls autoPlay />
-      <div>
-        {!webcamRecorder.isRecording ? (
-          <button onClick={webcamRecorder.startRecording}>Start Recording</button>
-        ) : (
-          <button onClick={webcamRecorder.stopRecording}>Stop Recording</button>
-        )}
-      </div>
-    </div>
+    
+    <Flex style={{ height: '100vh' }} p="md">
+      <Paper bg="redLight" radius="10px" m="sm" p="md">
+        <Flex direction="column" style={{ flex: 2, minHeight: 0 }}>
+          <video ref={videoRef} autoPlay width={400} height={300}></video>
+          <video ref={screenRef} autoPlay width={400} height={300}></video>
+        </Flex>
+      </Paper>
+    </Flex>
   );
 }
 
 
-// Screen recording
-export const useScreenRecorder = (serverUrl: string) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [mediaSocket, setMediaSocket] = useState<Socket | null>(null);
+export async function getWebcamStream(videoElement: HTMLVideoElement | null): Promise<MediaStream | null> {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    if (videoElement) {
+      videoElement.srcObject = stream;
+    }
+    return stream;
+  } catch (error) {
+    console.error("Error accessing webcam:", error);
+    return null;
+  }
+}
 
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+export async function getScreenStream(screenElement: HTMLVideoElement | null): Promise<MediaStream | null> {
+  try {
+    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    if (screenElement) {
+      screenElement.srcObject = stream;
+    }
+    return stream;
+  } catch (error) {
+    console.error("Error accessing screen:", error);
+    return null;
+  }
+}
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
+export function captureFrame(
+  videoElement: HTMLVideoElement | null,
+  screenElement: HTMLVideoElement | null,
+  canvasElement: HTMLCanvasElement | null,
+  callback: (blob: Blob) => void
+): void {
+  if (videoElement && screenElement && canvasElement) {
+    const canvas = canvasElement;
+    const context = canvas.getContext("2d");
 
-      const recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-      setMediaStream(stream);
-      setMediaRecorder(recorder);
+    if (context) {
+      // Draw webcam feed
+      context.drawImage(videoElement, 0, 0, canvas.width / 2, canvas.height);
 
-      let socket = io(serverUrl);
-      console.log("screen recording: connected to socket")
+      // Draw screen feed
+      context.drawImage(screenElement, canvas.width / 2, 0, canvas.width / 2, canvas.height);
 
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          socket.emit('video-data', event.data);
+      // Convert canvas to Blob and call callback
+      canvas.toBlob((blob) => {
+        if (blob) {
+          callback(blob);
         }
-      };
-
-      recorder.start(1000); // Stream data every second
-      setIsRecording(true);
-      setMediaSocket(socket);
-    } catch (err) {
-      console.error("Error starting screen recording:", err);
+      }, "image/png");
     }
-  };
+  }
+}
 
-  const stopRecording = () => {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach(track => track.stop());
+export async function uploadCapturedData(blob: Blob) {
+  try {
+    const formData = new FormData();
+    formData.append("image", blob, "capture.png");
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData, // Sending the blob as multipart/form-data
+    });
+
+    if (!response.ok) {
+      console.error("Failed to upload captured data.");
     }
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-    }
-    if (mediaSocket) {
-      mediaSocket.disconnect();
-      console.log("screen recording: disconnected from socket");
-    }
-    setIsRecording(false);
-  };
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-      }
-      if (mediaRecorder) {
-        mediaRecorder.stop();
-      }
-      if (mediaSocket) {
-        mediaSocket.disconnect();
-      }
-    };
-  }, [mediaStream, mediaRecorder]);
-
-  return { videoRef, isRecording, startRecording, stopRecording };
-};
-
-
-// Webcam recording
-export const useWebcamRecorder = (serverUrl: string) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [mediaSocket, setMediaSocket] = useState<Socket | null>(null);
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
-
-      const recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-      setMediaStream(stream);
-      setMediaRecorder(recorder);
-
-      let socket = io(serverUrl);
-      console.log("webcam recording: connected to socket")
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          socket.emit('video-data', event.data);
-        }
-      };
-
-      recorder.start(1000); // Stream data every second
-      setIsRecording(true);
-      setMediaSocket(socket);
-    } catch (err) {
-      console.error("Error starting screen recording:", err);
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach(track => track.stop());
-    }
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-    }
-    if (mediaSocket) {
-      mediaSocket.disconnect();
-    }
-    setIsRecording(false);
-  };
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-      }
-      if (mediaRecorder) {
-        mediaRecorder.stop();
-      }
-      if (mediaSocket) {
-        mediaSocket.disconnect();
-      }
-    };
-  }, [mediaStream, mediaRecorder]);
-
-  return { videoRef, isRecording, startRecording, stopRecording };
-};
+  } catch (error) {
+    console.error("Error uploading captured data:", error);
+  }
+}
 
