@@ -1,33 +1,82 @@
-import { Flex, Box, useMantineTheme } from "@mantine/core";
+import { Flex, Paper } from "@mantine/core";
 import UserVideoGrid from "~/components/user-grid/user-grid";
 
 export default function ProctorPage() {
-  const theme = useMantineTheme();
+  // Two Columns, Two Rows in each column
+  // row1:row2 = 1:2
+  // row1col1:row1col2 = 2:1
+  // row2col1:row2col2 = 1:1
 
   return (
-    <Flex style={{ height: '100vh' }}>
+    <Flex style={{ height: '100vh' }} p="md">
       {/* Left */}
-      <Flex direction="column" style={{ flex: 2, borderRight: `1px solid ${theme.colors.grey4[1]}` }}>
+      <Flex
+        direction="column"
+        style={{
+          flex: 2,
+          // borderRight: `20px solid ${theme.colors.grey4[1]}`,
+          minHeight: 0, // Allow flex items to shrink
+        }}
+      >
         {/* Top Left */}
-        <Box style={{ flex: 1, borderBottom: `1px solid ${theme.colors.grey4[1]}` }}>
+        <Paper
+          style={{
+            flex: 1,
+            // borderBottom: `20px solid ${theme.colors.grey4[1]}`,
+            minHeight: 0,
+          }}
+          bg="grey1"
+          radius="10px"
+          m="sm"
+          p="md"
+        >
           Left Top
-        </Box>
+        </Paper>
         {/* Bottom Left */}
-        <Box style={{ flex: 2 }}>
-          <UserVideoGrid p="lg" />
-        </Box>
+        <Paper
+          style={{
+            flex: 2,
+            minHeight: 0,
+            overflow: 'hidden', // Prevent content from affecting layout
+          }}
+          bg="grey4"
+          radius="10px"
+          m="sm"
+          p="md"
+        >
+          <UserVideoGrid />
+        </Paper>
       </Flex>
 
       {/* Right */}
-      <Flex direction="column" style={{ flex: 1 }}>
+      <Flex
+        direction="column"
+        style={{ flex: 1, minHeight: 0 }} // Allow flex items to shrink
+      >
         {/* Top Right */}
-        <Box style={{ flex: 1, borderBottom: `1px solid ${theme.colors.grey4[1]}` }}>
+        <Paper
+          style={{
+            flex: 1,
+            // borderBottom: `20px solid ${theme.colors.grey4[1]}`,
+            minHeight: 0,
+          }}
+          radius="10px"
+          bg="redLight"
+          m="sm"
+          p="md"
+        >
           Right Top
-        </Box>
+        </Paper>
         {/* Bottom Right */}
-        <Box style={{ flex: 1 }}>
+        <Paper
+          style={{ flex: 1, minHeight: 0 }}
+          radius="10px"
+          bg="orangeLight"
+          m="sm"
+          p="md"
+        >
           Right Bottom
-        </Box>
+        </Paper>
       </Flex>
     </Flex>
   );

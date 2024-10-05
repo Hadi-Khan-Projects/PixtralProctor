@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { Badge, Flex, Grid, GridProps, Group, Paper, useMantineTheme } from '@mantine/core';
 
 interface UserGridProps extends GridProps { }
@@ -65,19 +66,32 @@ export default function UserVideoGrid(props: UserGridProps) {
   const theme = useMantineTheme();
 
   return (
-    <Grid gutter="md" {...props}>
+    <Grid gutter="md" {...props} style={{ height: '100%', minHeight: 0 }}>
       {videoSources.map((user, index) => (
-        <Grid.Col span={6} key={index}>
-          <Paper radius="8px" p="md" bg={user.cheatCurrently ? 'redLight' : 'grey1'} withBorder
+        <Grid.Col span={6} key={index} style={{ height: '100%', minHeight: 0 }}>
+          <Paper
+            radius="8px"
+            p="md"
+            bg={user.cheatCurrently ? 'redLight' : 'white'}
+            withBorder
             style={{
-              border: `1px solid ${theme.colors.grey4[1]}`
+              border: `1px solid ${theme.colors.grey4[1]}`,
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
             }}
           >
             {/* Flex container to arrange videos side by side */}
             <Flex
               direction="row"
               gap="md"
-              style={{ width: '100%', boxSizing: 'border-box' }}
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                flex: 1,
+                minHeight: 0,
+              }}
             >
               <video
                 src={user.srcWebcam}
@@ -90,15 +104,7 @@ export default function UserVideoGrid(props: UserGridProps) {
                   objectFit: 'cover',
                   aspectRatio: '16/9',
                 }}
-              >
-                <track
-                  kind="captions"
-                  srcLang="en"
-                  src={user.srcWebcam}
-                  label="English"
-                  default
-                />
-              </video>
+              />
               <video
                 src={user.srcScreen}
                 autoPlay
@@ -110,15 +116,7 @@ export default function UserVideoGrid(props: UserGridProps) {
                   objectFit: 'cover',
                   aspectRatio: '16/9',
                 }}
-              >
-                <track
-                  kind="captions"
-                  srcLang="en"
-                  src={user.srcScreen}
-                  label="English"
-                  default
-                />
-              </video>
+              />
             </Flex>
             <Flex direction="row" pt="sm" justify="space-between">
               <Badge size="lg" radius="8px" color="grey6">
@@ -129,7 +127,9 @@ export default function UserVideoGrid(props: UserGridProps) {
                 <Badge
                   size="lg"
                   radius="8px"
-                  color={user.cheatCount > 5 ? 'red' : user.cheatCount > 0 ? 'yellow' : 'green'}
+                  color={
+                    user.cheatCount > 5 ? 'red' : user.cheatCount > 0 ? 'yellow' : 'green'
+                  }
                 >
                   {user.cheatCount}
                 </Badge>

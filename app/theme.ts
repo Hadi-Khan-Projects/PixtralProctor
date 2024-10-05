@@ -16,5 +16,6 @@ export const theme = createTheme({
     grey6: generateColorArray("#495057"),
     black: generateColorArray("#000000"),
     redLight: generateColorArray("#ffcccc"),
+    orangeLight: generateColorArray("#ffe6cc"),
   }
 });
