@@ -5,21 +5,26 @@ import { json, useLoaderData, useSearchParams } from "@remix-run/react";
 import { videoService } from "~/backend/video-stream.server";
 import UserVideoGrid from "~/components/user-grid/user-grid";
 import UserSelectedVideo from "~/components/user-selected-video.tsx/user-selected-video";
+import { logService } from "~/backend/logs.server";
+import UserLogs from "~/components/user-logs/user-logs";
+import { UserLog } from "~/types";
+import { chatService } from "~/backend/chat.server";
+import UserChat from "~/components/user-chat/user-chat";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(request.url.split("?")[1]);
   const userName = searchParams.get("userName") || "";
 
   const videoSources = await videoService.getVideoSources();
+  const logs = userName ? await logService.getLogsForUserName(userName) : await logService.getLogs();
+  const chat = userName ? await chatService.getChatForUserName(userName) : await chatService.getChat();
 
   let selectedVideoSource;
   if (userName) {
-    selectedVideoSource = videoSources.find(
-      (source) => source.userName === userName
-    );
+    selectedVideoSource = await videoService.getVideoSourceFormUserName(userName);
   }
 
-  return json({ userName, videoSources, selectedVideoSource });
+  return json({ userName, videoSources, selectedVideoSource, logs, chat});
 }
 
 export default function ProctorPage() {
@@ -29,6 +34,20 @@ export default function ProctorPage() {
 
   // State to control the height of the top-left component
   const [topLeftHeight, setTopLeftHeight] = useState("15%");
+
+  // convert log timestamps back to Date objects
+  const logs = data.logs.map(log => ({
+    ...log,
+    timestamp: new Date(log.timestamp)
+  })) as UserLog[];
+
+  // convert chat timestamps back to Date objects
+  const chat = data.chat.map(chat => ({
+    ...chat,
+    timestamp: new Date(chat.timestamp)
+  }));
+
+  console.log(logs);
 
   useEffect(() => {
     // Update the height based on whether a video is selected
@@ -152,7 +171,7 @@ export default function ProctorPage() {
               bd="2px solid grey4"
               shadow="xl"
             >
-              Right Top
+              <UserLogs logs={logs} selectedUsername={data.userName} />
             </Paper>
             {/* Bottom Right */}
             <Paper
@@ -165,7 +184,7 @@ export default function ProctorPage() {
               bd="2px solid grey4"
               shadow="xl"
             >
-              Right Bottom
+              <UserChat chat={chat} selectedUserName={data.userName} />
             </Paper>
           </Flex>
         </Flex>
