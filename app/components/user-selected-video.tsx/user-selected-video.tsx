@@ -11,17 +11,68 @@ import {
 } from "@mantine/core";
 import { VideoSource } from "~/types";
 import { IconPointer, IconVolume } from "@tabler/icons-react";
+import { useEffect, useRef } from "react"; // Import useEffect and useRef
 
 type UserSelectedVideoProps = {
   selectedVideoSource?: VideoSource;
   onDeselectUser: () => void;
-}
+};
 
 export default function UserSelectedVideo({
   selectedVideoSource,
   onDeselectUser,
 }: UserSelectedVideoProps) {
   const theme = useMantineTheme();
+
+  // Refs for the webcam video and canvas
+  const webcamVideoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const captureIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // Only set up the capture if a user is selected
+    if (selectedVideoSource) {
+      const videoElement = webcamVideoRef.current;
+      const canvasElement = canvasRef.current;
+
+      if (videoElement && canvasElement) {
+        const context = canvasElement.getContext("2d");
+
+        // Ensure the canvas dimensions match the video dimensions
+        const setCanvasDimensions = () => {
+          canvasElement.width = videoElement.videoWidth;
+          canvasElement.height = videoElement.videoHeight;
+        };
+
+        videoElement.addEventListener("loadedmetadata", setCanvasDimensions);
+
+        // Capture frames at 4 times per second
+        captureIntervalRef.current = setInterval(() => {
+          // Draw the current video frame onto the canvas
+          context?.drawImage(
+            videoElement,
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height
+          );
+
+          processImage(canvasElement.toDataURL("image/jpeg"), {
+            name: selectedVideoSource.userName,
+            type: "webcam"
+          });
+        }, 250); // 250ms intervals (4 times per second)
+
+        // Clean up event listener and interval on unmount or when selectedVideoSource changes
+        return () => {
+          videoElement.removeEventListener("loadedmetadata", setCanvasDimensions);
+          if (captureIntervalRef.current) {
+            clearInterval(captureIntervalRef.current);
+          }
+        };
+      }
+    }
+  }, [selectedVideoSource]);
 
   return selectedVideoSource ? (
     <Flex
@@ -33,7 +84,9 @@ export default function UserSelectedVideo({
         {/* Top left Paper */}
         <Paper p="xs" radius="8px" withBorder bd="3px solid blue" bg="grey1">
           <Group>
-            <Text size="lg" pb="0.1rem" fw={700}>Currently inspecting:</Text>
+            <Text size="lg" pb="0.1rem" fw={700}>
+              Currently inspecting:
+            </Text>
             <Button
               size="sm"
               radius="8px"
@@ -46,17 +99,26 @@ export default function UserSelectedVideo({
         </Paper>
         {/* Top right Papers */}
         <Group>
-          <Paper p="xs" radius="8px" withBorder bd="1px solid grey4" h="3.35rem" w="3.35rem" 
+          <Paper
+            p="xs"
+            radius="8px"
+            withBorder
+            bd="1px solid grey4"
+            h="3.35rem"
+            w="3.35rem"
             bg={selectedVideoSource.cheats.audio ? "redLight" : "grey1"}
           >
             <Center style={{ height: "100%" }}>
-              <IconVolume
-              size={24}
-              color="black"
-              />
+              <IconVolume size={24} color="black" />
             </Center>
           </Paper>
-          <Paper p="xs" radius="8px" withBorder bd="1px solid grey4" bg="grey1">
+          <Paper
+            p="xs"
+            radius="8px"
+            withBorder
+            bd="1px solid grey4"
+            bg="grey1"
+          >
             <Group>
               <Text>Number of potential cheats:</Text>
               <Badge
@@ -68,8 +130,8 @@ export default function UserSelectedVideo({
                   selectedVideoSource.cheatCount > 4
                     ? "red"
                     : selectedVideoSource.cheatCount > 0
-                      ? "yellow"
-                      : "green"
+                    ? "yellow"
+                    : "green"
                 }
               >
                 {selectedVideoSource.cheatCount}
@@ -138,9 +200,11 @@ export default function UserSelectedVideo({
           }}
         >
           <video
+            ref={webcamVideoRef} // Reference to the webcam video element
             src={selectedVideoSource.srcWebcam}
             autoPlay
             loop
+            muted
             style={{
               flex: 1,
               width: "100%",
@@ -154,6 +218,8 @@ export default function UserSelectedVideo({
           <Text ta="center" mt="sm">
             Webcam
           </Text>
+          {/* Hidden canvas for capturing frames */}
+          <canvas ref={canvasRef} style={{ display: "none" }} />
         </Paper>
       </Flex>
     </Flex>
@@ -175,10 +241,16 @@ export default function UserSelectedVideo({
         <Group>
           <IconPointer color={theme.colors.blue[1]} size="1.5rem" />
           <Text size="1.2rem" color="blue" fw={700}>
-            Select a user to inspect their webcam, screen, audio, cheat logs, and to send a message.
+            Select a user to inspect their webcam, screen, audio, cheat logs, and
+            to send a message.
           </Text>
         </Group>
       </Center>
     </Paper>
   );
+}
+
+
+const processImage = async (imageData: string, metadata: { name: string; type: string }) => {
+  console.log(imageData, metadata)
 }

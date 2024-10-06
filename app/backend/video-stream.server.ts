@@ -26,7 +26,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/Yousef.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Anatoly Karazhnev',
     cheatCount: 2,
@@ -37,9 +37,9 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/zach.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Diya Bilal',
+    userName: 'Zach',
     cheatCount: 0,
     cheats: {
       audio: false,
@@ -48,7 +48,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/Muath.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Karsyn Morton',
     cheatCount: 7,
@@ -59,9 +59,9 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/zhoulian.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Xander Giles',
+    userName: 'Lian Zhou',
     cheatCount: 0,
     cheats: {
       audio: false,
@@ -70,7 +70,18 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/wangyus1.mp4',
+    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
+    userName: 'Yus Wang',
+    cheatCount: 0,
+    cheats: {
+      audio: false,
+      webcam: false,
+      screen: false
+    }
+  },
+  {
+    srcWebcam: '/user-videos/vahid.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Harleigh Castro',
     cheatCount: 0,
@@ -81,9 +92,9 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/bajajpak.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Aliza O’Connor',
+    userName: 'Diya Bilal',
     cheatCount: 0,
     cheats: {
       audio: false,
@@ -92,18 +103,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Amayah Ayers',
-    cheatCount: 0,
-    cheats: {
-      audio: false,
-      webcam: false,
-      screen: false
-    }
-  },
-  {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/Jourabloo.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Jaxon Lee',
     cheatCount: 1,

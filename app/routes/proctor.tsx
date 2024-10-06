@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Flex, Paper, Title, useMantineTheme } from "@mantine/core";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData, useSearchParams } from "@remix-run/react";
