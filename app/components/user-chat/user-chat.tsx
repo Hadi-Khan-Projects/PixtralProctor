@@ -4,6 +4,7 @@ import {
   Paper,
   Text,
   ScrollArea,
+  TextInput,
 } from "@mantine/core";
 import { Chat } from "~/types";
 
@@ -35,7 +36,7 @@ export default function UserChat({ selectedUserName, chat }: UserChatProps) {
             style={{
               alignSelf:
                 message.userName === selectedUserName ? "flex-end" : "flex-start",
-              maxWidth: "70%",
+              maxWidth: "100%",
             }}
           >
             <Group>
@@ -48,6 +49,7 @@ export default function UserChat({ selectedUserName, chat }: UserChatProps) {
           </Paper>
         ))}
       </ScrollArea>
+      <TextInput placeholder="Type a message..." />
     </Flex>
   );
 }
