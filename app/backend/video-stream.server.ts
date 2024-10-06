@@ -70,7 +70,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: '/user-videos/wangyus1.mp4',
+    srcWebcam: '/user-videos/XiYin.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Yus Wang',
     cheatCount: 0,
@@ -114,7 +114,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/dhingra5.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Ava Smith',
     cheatCount: 3,
@@ -125,7 +125,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/makiluke.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Liam Johnson',
     cheatCount: 0,
@@ -136,7 +136,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/chuangy6.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Emma Williams',
     cheatCount: 0,
@@ -147,7 +147,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/meowseph.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Noah Brown',
     cheatCount: 5,
@@ -158,7 +158,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/wangyus1.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'Olivia Jones',
     cheatCount: 2,
@@ -169,7 +169,7 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/yarub.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
     userName: 'William Garcia',
     cheatCount: 0,
@@ -180,9 +180,9 @@ const videoSources: VideoSource[] = [
     }
   },
   {
-    srcWebcam: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    srcWebcam: '/user-videos/mustaffa.mp4',
     srcScreen: 'https://www.w3schools.com/html/movie.mp4',
-    userName: 'Sophia Martinez',
+    userName: 'Mustafa Al-Obaidi',
     cheatCount: 0,
     cheats: {
       audio: false,
