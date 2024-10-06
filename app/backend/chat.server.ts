@@ -23,10 +23,8 @@ const chat: Chat[] = [
     message: "Karsyn, please stop conversing with whoever else is in the room with you."
   },
   {
-    timestamp: new Date("2021-10-06T12:10:00"),
+    timestamp: new Date("2021-10-6T12:10:00"),
     userName: "Karsyn Morton",
     message: "Please note, I have reported this to the professor."
   },
-
-
 ]

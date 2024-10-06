@@ -12,8 +12,6 @@ type UserGridProps = {
 export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSources, ...props }: UserGridProps) {
   const theme = useMantineTheme();
 
-  console.log(videoSources)
-
   return (
     <ScrollArea scrollbars="y" style={{ height: '100%', minHeight: 0 }}>
       <Grid gutter="md" {...props} style={{ height: '100%', minHeight: 0 }}>
@@ -45,7 +43,7 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                 }}
               >
                 <video
-                  src={user.srcScreen}
+                  src={user.srcWebcam}
                   autoPlay
                   loop
                   style={{
@@ -57,6 +55,7 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                   }}
                 />
                 <video
+                  src={user.srcScreen}
                   autoPlay
                   loop
                   style={{
@@ -66,9 +65,7 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                     objectFit: 'cover',
                     aspectRatio: '16/9',
                   }}
-                >
-                  <source src={user.srcWebcam} type="video/mp4" />
-                </video>
+                />
               </Flex>
               <Flex direction="row" pt="0.4em" justify="space-between">
                 <Button
@@ -80,25 +77,25 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                     root: classes.root,
                   }}
                 >
-                  {user.userName.length > 16 ? `${user.userName.slice(0, 12)}...` : user.userName}
-                </Button>
-                <Group gap="xs">
-                  <Text size="sm">Potential Cheats:</Text>
-                  <Badge
-                    size="md"
-                    radius="8px"
-                    color={
-                      user.cheatCount > 4 ? 'red' : user.cheatCount > 0 ? 'yellow' : 'green'
-                    }
-                  >
-                    {user.cheatCount}
-                  </Badge>
-                </Group>
-              </Flex>
-            </Paper>
+                {user.userName.length > 16 ? `${user.userName.slice(0, 12)}...` : user.userName}
+              </Button>
+              <Group gap="xs">
+                <Text size="sm">Potential Cheats:</Text>
+                <Badge
+                  size="md"
+                  radius="8px"
+                  color={
+                    user.cheatCount > 4 ? 'red' : user.cheatCount > 0 ? 'yellow' : 'green'
+                  }
+                >
+                  {user.cheatCount}
+                </Badge>
+              </Group>
+            </Flex>
+          </Paper>
           </Grid.Col>
         ))}
-      </Grid>
+    </Grid>
     </ScrollArea >
   );
 }

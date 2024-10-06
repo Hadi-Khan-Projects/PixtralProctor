@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, } from "react";
 import { Flex, Paper, Title, useMantineTheme } from "@mantine/core";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData, useSearchParams } from "@remix-run/react";
@@ -24,7 +24,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     selectedVideoSource = await videoService.getVideoSourceFormUserName(userName);
   }
 
-  return json({ userName, videoSources, selectedVideoSource, logs, chat});
+  return json({ userName, videoSources, selectedVideoSource, logs, chat });
 }
 
 export default function ProctorPage() {
@@ -46,8 +46,6 @@ export default function ProctorPage() {
     ...chat,
     timestamp: new Date(chat.timestamp)
   }));
-
-  console.log(logs);
 
   useEffect(() => {
     // Update the height based on whether a video is selected
@@ -171,7 +169,11 @@ export default function ProctorPage() {
               bd="2px solid grey4"
               shadow="xl"
             >
-              <UserLogs logs={logs} selectedUsername={data.userName} />
+              <UserLogs
+                logs={logs}
+                selectedUserName={data.userName}
+                onUserSelect={onUserSelect}
+              />
             </Paper>
             {/* Bottom Right */}
             <Paper
@@ -184,7 +186,11 @@ export default function ProctorPage() {
               bd="2px solid grey4"
               shadow="xl"
             >
-              <UserChat chat={chat} selectedUserName={data.userName} />
+              <UserChat 
+              chat={chat} 
+              selectedUserName={data.userName} 
+              onUserSelect={onUserSelect}
+              />
             </Paper>
           </Flex>
         </Flex>

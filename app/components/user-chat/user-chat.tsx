@@ -5,22 +5,59 @@ import {
   Text,
   ScrollArea,
   TextInput,
+  Button,
+  useMantineTheme,
 } from "@mantine/core";
 import { Chat } from "~/types";
 
 type UserChatProps = {
   selectedUserName: string;
   chat: Chat[];
+  onUserSelect: (userName: string) => void;
 };
 
-export default function UserChat({ selectedUserName, chat }: UserChatProps) {
-  // const theme = useMantineTheme();
+export default function UserChat({ selectedUserName, chat, onUserSelect }: UserChatProps) {
+  const theme = useMantineTheme();
 
   return (
     <Flex direction="column" style={{ height: "100%" }}>
-      <Text size="lg" fw={700} mb="md">
-        Chat
-      </Text>
+      <Flex direction="row" justify="space-between" align="center" mb="md">
+        <Paper p="xs" radius="8px" withBorder bd={selectedUserName ? "3px solid blue" : "1px solid grey4"} bg="grey1">
+          <Group>
+            {selectedUserName ? (
+              <>
+                <Text size="lg" pb="0.1rem" fw={700}>
+                  Cheat logs for:
+                </Text>
+                <Button
+                  size="sm"
+                  radius="8px"
+                  color="blue"
+                  onClick={() => onUserSelect(selectedUserName)}
+                >
+                  {selectedUserName}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Text size="lg" pb="0.1rem" fw={700}>
+                  Cheat logs for:
+                </Text>
+                <Button
+                  size="sm"
+                  radius="8px"
+                  color="grey6"
+                  onClick={() => onUserSelect(selectedUserName)}
+                >
+                  All users
+                </Button>
+              </>
+            )
+            }
+          </Group>
+        </Paper>
+        <Paper w="1" h="1"></Paper>
+      </Flex>
       <ScrollArea style={{ flex: 1 }}>
         {chat.map((message, index) => (
           <Paper
@@ -49,7 +86,13 @@ export default function UserChat({ selectedUserName, chat }: UserChatProps) {
           </Paper>
         ))}
       </ScrollArea>
-      <TextInput placeholder="Type a message..." />
+      <TextInput placeholder="Type a message..." radius={8} pt="md"
+        styles={{
+          input: {
+            border: `1px solid ${theme.colors.grey4[1]}`,
+          }
+        }}
+      />
     </Flex>
   );
 }
