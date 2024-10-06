@@ -27,7 +27,7 @@ export default function UserChat({ selectedUserName, chat, onUserSelect }: UserC
             {selectedUserName ? (
               <>
                 <Text size="lg" pb="0.1rem" fw={700}>
-                  Cheat logs for:
+                  Chat logs for:
                 </Text>
                 <Button
                   size="sm"

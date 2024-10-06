@@ -6,7 +6,7 @@ const p2 = "KV8Uub9wrmwjz4A0";
 const client = new Mistral({ apiKey: `${p1}${p2}` });
 
 class PixtralService {
-  async getCheatingPrediction(webcamPhoto: Blob, screenPhoto: Blob): Promise<{log: UserLog, webcamCheat: boolean, screenCheat: boolean}> {
+  async getCheatingPrediction(number: string): Promise<{log: UserLog, webcamCheat: boolean, screenCheat: boolean}> {
     // tbd
   }
 }
