@@ -49,6 +49,8 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                   style={{
                     flex: 1,
                     minWidth: 0,
+                    width: "100%",
+                    height: "100%",
                     borderRadius: '8px',
                     objectFit: 'cover',
                     aspectRatio: '16/9',
@@ -61,6 +63,8 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                   style={{
                     flex: 1,
                     minWidth: 0,
+                    width: "100%",
+                    height: "100%",
                     borderRadius: '8px',
                     objectFit: 'cover',
                     aspectRatio: '16/9',

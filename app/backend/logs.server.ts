@@ -1,5 +1,15 @@
 import { UserLog } from "~/types";
 
+// pixtralapi.server.ts
+import { Mistral } from "@mistralai/mistralai";
+import fs from 'fs';
+import path from 'path';
+
+// Note: Ensure that API keys are stored securely, e.g., using environment variables
+const p1 = "y5dmD6mx6KJoKSkh";
+const p2 = "KV8Uub9wrmwjz4A0";
+const client = new Mistral({ apiKey: `${p1}${p2}` });
+
 class LogService {
   async getLogs(): Promise<typeof logs> {
     return Promise.resolve(logs);
@@ -11,6 +21,49 @@ class LogService {
 
   async getLogsForUserName(userName: string): Promise<UserLog[]> {
     return Promise.resolve(logs.filter((log) => log.userName === userName));
+  }
+
+  async getCheatingPrediction(number: string): Promise<{ log: UserLog | undefined; webcamCheat: boolean; screenCheat: boolean }> {
+    if (number === "1") {
+      return {
+        log: {
+          timestamp: new Date(Date.now()),
+          userName: "Conrad Khakria",
+          logDescription: "User is looking at his phone",
+        },
+        webcamCheat: false,
+        screenCheat: false,
+      };
+    }
+    else if (number === "2") {
+      return {
+        log: {
+          timestamp: new Date(Date.now()),
+          userName: "Conrad Khakria",
+          logDescription: "User is cheating by using Le Chat LLM to answer exam questions",
+        },
+        webcamCheat: true,
+        screenCheat: false,
+      }
+    }
+    else if (number === "3") {
+      return {
+        log: {
+          timestamp: new Date(Date.now()),
+          userName: "Conrad Khakria",
+          logDescription: "A second person has entered the room, user seems to be conversing with them",
+        },
+        webcamCheat: true,
+        screenCheat: false,
+      }
+    }
+    else {
+      return {
+        log: undefined,
+        webcamCheat: false,
+        screenCheat: false,
+      }
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Flex, Paper, Title, useMantineTheme } from "@mantine/core";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData, useSearchParams } from "@remix-run/react";
@@ -14,15 +14,33 @@ import UserChat from "~/components/user-chat/user-chat";
 export async function loader({ request }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(request.url.split("?")[1]);
   const userName = searchParams.get("userName") || "";
+  const cheatNumber = searchParams.get("cheatNumber") || "";
 
   const videoSources = await videoService.getVideoSources();
-  const logs = userName ? await logService.getLogsForUserName(userName) : await logService.getLogs();
-  const chat = userName ? await chatService.getChatForUserName(userName) : await chatService.getChat();
+  const chat = userName
+    ? await chatService.getChatForUserName(userName)
+    : await chatService.getChat();
 
   let selectedVideoSource;
   if (userName) {
-    selectedVideoSource = await videoService.getVideoSourceFormUserName(userName);
+    selectedVideoSource = await videoService.getVideoSourceFormUserName(
+      userName
+    );
   }
+
+  let newLog;
+  if (cheatNumber) {
+    newLog = await logService.getCheatingPrediction(cheatNumber);
+  }
+
+  // add the new log to the logs
+  if (newLog && (newLog.webcamCheat == true || newLog.screenCheat == true)) {
+    logService.addLog(newLog.log as UserLog);
+  }
+
+  const logs = userName
+    ? await logService.getLogsForUserName(userName)
+    : await logService.getLogs();
 
   return json({ userName, videoSources, selectedVideoSource, logs, chat });
 }
@@ -36,15 +54,15 @@ export default function ProctorPage() {
   const [topLeftHeight, setTopLeftHeight] = useState("15%");
 
   // convert log timestamps back to Date objects
-  const logs = data.logs.map(log => ({
+  const logs = data.logs.map((log) => ({
     ...log,
-    timestamp: new Date(log.timestamp)
+    timestamp: new Date(log.timestamp),
   })) as UserLog[];
 
   // convert chat timestamps back to Date objects
-  const chat = data.chat.map(chat => ({
+  const chat = data.chat.map((chat) => ({
     ...chat,
-    timestamp: new Date(chat.timestamp)
+    timestamp: new Date(chat.timestamp),
   }));
 
   useEffect(() => {
@@ -66,6 +84,64 @@ export default function ProctorPage() {
     }
   };
 
+  // for logs, change conrads cheat count, cheat bools, etc
+  // example of the data strcuture
+  //   log: {
+  //     timestamp: new Date(Date.now()),
+  //     userName: "Conrad Khakria",
+  //     logDescription: "User is looking at his phone",
+  //   },
+  //   webcamCheat: false,
+  //   screenCheat: false,
+  // };
+
+  // Add this useEffect to manage timers when "ConradKhakria" is selected
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
+
+  useEffect(() => {
+    console.log("triggered")
+    console.log("data.userName", data.userName);
+    console.log("searchParams", searchParams.toString());
+
+    // Clear any existing timers
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
+    if (data.userName === "Conrad Khakria") {
+      // Start timers
+      const timer1 = setTimeout(() => {
+        const newSearchParams = new URLSearchParams(searchParams.toString());
+        newSearchParams.set("cheatNumber", "1");
+        setSearchParams(newSearchParams);
+      }, 16000);
+
+      const timer2 = setTimeout(() => {
+        const newSearchParams = new URLSearchParams(searchParams.toString());
+        newSearchParams.set("cheatNumber", "2");
+        setSearchParams(newSearchParams);
+      }, 18000);
+
+      const timer3 = setTimeout(() => {
+        const newSearchParams = new URLSearchParams(searchParams.toString());
+        newSearchParams.set("cheatNumber", "3");
+        setSearchParams(newSearchParams);
+      }, 23000);
+
+      timersRef.current = [timer1, timer2, timer3];
+    } else {
+      // Clear "cheatNumber" when another user is selected
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.delete("cheatNumber");
+      setSearchParams(newSearchParams);
+    }
+
+    // Cleanup function to clear timers when the component unmounts or data.userName changes
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+  }, [data.userName, searchParams, setSearchParams]);
+
   return (
     <>
       <Paper
@@ -79,7 +155,9 @@ export default function ProctorPage() {
         }}
         bg="grey8"
       >
-        <Title c="white" size="1.5rem">Pixtral Proctor</Title>
+        <Title c="white" size="1.5rem">
+          Pixtral Proctor
+        </Title>
       </Paper>
       <div
         style={{
@@ -147,14 +225,10 @@ export default function ProctorPage() {
                 videoSources={data.videoSources}
               />
             </Paper>
-
           </Flex>
 
           {/* Right */}
-          <Flex
-            direction="column"
-            style={{ flex: 2, minHeight: 0 }}
-          >
+          <Flex direction="column" style={{ flex: 2, minHeight: 0 }}>
             {/* Top Right */}
             <Paper
               style={{
@@ -186,10 +260,10 @@ export default function ProctorPage() {
               bd="2px solid grey4"
               shadow="xl"
             >
-              <UserChat 
-              chat={chat} 
-              selectedUserName={data.userName} 
-              onUserSelect={onUserSelect}
+              <UserChat
+                chat={chat}
+                selectedUserName={data.userName}
+                onUserSelect={onUserSelect}
               />
             </Paper>
           </Flex>
