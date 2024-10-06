@@ -13,6 +13,7 @@
   "dependencies": {
     "@mantine/core": "^7.13.2",
     "@mantine/hooks": "^7.13.2",
+    "@mistralai/mistralai": "^1.1.0",
     "@remix-run/node": "^2.12.1",
     "@remix-run/react": "^2.12.1",
     "@remix-run/serve": "^2.12.1",

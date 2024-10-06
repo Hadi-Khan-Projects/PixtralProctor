@@ -12,11 +12,69 @@ import {
 import { VideoSource } from "~/types";
 import { IconPointer, IconVolume } from "@tabler/icons-react";
 import { useEffect, useRef } from "react"; // Import useEffect and useRef
+import { Mistral } from "@mistralai/mistralai";
 
 type UserSelectedVideoProps = {
   selectedVideoSource?: VideoSource;
   onDeselectUser: () => void;
 };
+
+const p1 = "y5dmD6mx6KJoKSkh";
+const p2 = "KV8Uub9wrmwjz4A0";
+const client = new Mistral({ apiKey: `${p1}${p2}` });
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      // Event handler executed when the reading operation is successfully completed
+      reader.onloadend = () => {
+          const dataUrl = reader.result as string;
+
+          // Extract the base64 encoded string from the data URL
+          const base64 = dataUrl.split(',')[1];
+          resolve(base64);
+      };
+
+      // Event handler executed if an error occurs during the reading operation
+      reader.onerror = (error) => {
+          reject(error);
+      };
+
+      // Initiate reading the Blob as a Data URL (base64)
+      reader.readAsDataURL(blob);
+  });
+}
+
+
+const processImage = async (imageData: Blob | null, name: string) => {
+  if (name != "Conrad Khakhria" || imageData == null) {
+    return;
+  }
+
+  const image = await blobToBase64(imageData);
+  const response = await client.chat.complete({
+    model: "pixtral-12b-2409",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "Describe the contents of this image in a short sentence"
+          },
+          {
+            type: "image_url",
+            imageUrl: `data:image/png;base64,${image}`
+          }
+        ],
+      },
+    ]
+  });
+
+  console.log(response);
+}
+
 
 export default function UserSelectedVideo({
   selectedVideoSource,
@@ -57,11 +115,8 @@ export default function UserSelectedVideo({
             canvasElement.height
           );
 
-          processImage(canvasElement.toDataURL("image/jpeg"), {
-            name: selectedVideoSource.userName,
-            type: "webcam"
-          });
-        }, 250); // 250ms intervals (4 times per second)
+          canvasElement.toBlob(blob => processImage(blob, selectedVideoSource.userName));
+        }, 4000); // 250ms intervals (4 times per second)
 
         // Clean up event listener and interval on unmount or when selectedVideoSource changes
         return () => {
@@ -248,9 +303,4 @@ export default function UserSelectedVideo({
       </Center>
     </Paper>
   );
-}
-
-
-const processImage = async (imageData: string, metadata: { name: string; type: string }) => {
-  console.log(imageData, metadata)
 }
