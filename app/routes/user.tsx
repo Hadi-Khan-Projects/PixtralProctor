@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { Flex, Paper } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { getWebcamStream, getScreenStream, captureFrame, uploadCapturedData } from "./utils";

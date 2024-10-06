@@ -33,7 +33,7 @@ export default function ProctorPage() {
   useEffect(() => {
     // Update the height based on whether a video is selected
     if (data.selectedVideoSource) {
-      setTopLeftHeight("40%");
+      setTopLeftHeight("50%");
     } else {
       setTopLeftHeight("15%");
     }
@@ -141,7 +141,7 @@ export default function ProctorPage() {
             {/* Top Right */}
             <Paper
               style={{
-                flex: 5,
+                flex: 2,
                 minHeight: 0,
               }}
               radius="10px"
@@ -156,7 +156,7 @@ export default function ProctorPage() {
             </Paper>
             {/* Bottom Right */}
             <Paper
-              style={{ flex: 3, minHeight: 0 }}
+              style={{ flex: 1, minHeight: 0 }}
               radius="10px"
               bg="white"
               m="xs"

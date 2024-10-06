@@ -4,42 +4,80 @@ import {
   Flex,
   Group,
   Paper,
-  PaperProps,
   Text,
   Button,
   Center,
   useMantineTheme,
 } from "@mantine/core";
 import { VideoSource } from "~/types";
-import { IconPointer } from "@tabler/icons-react";
+import { IconPointer, IconVolume } from "@tabler/icons-react";
 
 type UserSelectedVideoProps = {
   selectedVideoSource?: VideoSource;
   onDeselectUser: () => void;
-} & PaperProps;
+}
 
 export default function UserSelectedVideo({
   selectedVideoSource,
   onDeselectUser,
-  ...props
 }: UserSelectedVideoProps) {
   const theme = useMantineTheme();
 
   return selectedVideoSource ? (
-    <Paper
-      radius="8px"
-      p="md"
-      bg={selectedVideoSource.cheatCurrently ? "redLight" : "grey1"}
-      withBorder
-      bd="4px solid blue"
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        minHeight: 0,
-      }}
-      {...props}
+    <Flex
+      direction="column"
+      style={{ flex: 1, minHeight: 0, height: "100%" }}
     >
+      {/* Top row with two Papers */}
+      <Flex direction="row" justify="space-between" align="center" mb="md">
+        {/* Top left Paper */}
+        <Paper p="xs" radius="8px" withBorder bd="3px solid blue" bg="grey1">
+          <Group>
+            <Text size="lg" pb="0.1rem" fw={700}>Currently inspecting:</Text>
+            <Button
+              size="sm"
+              radius="8px"
+              color="blue"
+              onClick={onDeselectUser}
+            >
+              {selectedVideoSource.userName}
+            </Button>
+          </Group>
+        </Paper>
+        {/* Top right Papers */}
+        <Group>
+          <Paper p="xs" radius="8px" withBorder bd="1px solid grey4" h="3.35rem" w="3.35rem" 
+            bg={selectedVideoSource.cheats.audio ? "redLight" : "grey1"}
+          >
+            <Center style={{ height: "100%" }}>
+              <IconVolume
+              size={24}
+              color="black"
+              />
+            </Center>
+          </Paper>
+          <Paper p="xs" radius="8px" withBorder bd="1px solid grey4" bg="grey1">
+            <Group>
+              <Text>Number of potential cheats:</Text>
+              <Badge
+                size="mlg"
+                w="2.5rem"
+                h="2rem"
+                radius="8px"
+                color={
+                  selectedVideoSource.cheatCount > 4
+                    ? "red"
+                    : selectedVideoSource.cheatCount > 0
+                      ? "yellow"
+                      : "green"
+                }
+              >
+                {selectedVideoSource.cheatCount}
+              </Badge>
+            </Group>
+          </Paper>
+        </Group>
+      </Flex>
       {/* Flex container to arrange videos side by side */}
       <Flex
         direction="row"
@@ -51,80 +89,93 @@ export default function UserSelectedVideo({
           minHeight: 0,
         }}
       >
-        <video
-          src={selectedVideoSource.srcWebcam}
-          autoPlay
-          loop
-          style={{
-            flex: 1,
-            minWidth: 0,
-            borderRadius: "8px",
-            objectFit: "cover",
-            aspectRatio: "16/9",
-          }}
-        />
-        <video
-          src={selectedVideoSource.srcScreen}
-          autoPlay
-          loop
-          style={{
-            flex: 1,
-            minWidth: 0,
-            borderRadius: "8px",
-            objectFit: "cover",
-            aspectRatio: "16/9",
-          }}
-        />
-      </Flex>
-      <Flex direction="row" pt="0.8em" justify="space-between">
-        <Button
-          size="md"
+        {/* Left video: Screen */}
+        <Paper
+          p="sm"
           radius="8px"
-          color="blue"
-          onClick={onDeselectUser}
+          withBorder
+          bd="1px solid grey4"
+          bg={selectedVideoSource.cheats.screen ? "redLight" : "grey1"}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+          }}
         >
-          {selectedVideoSource.userName}
-        </Button>
-        <Group gap="xs">
-          <Text size="lg">Potential Cheats:</Text>
-          <Badge
-            size="lg"
-            w="3rem"
-            h="2.5rem"
-            radius="8px"
-            color={
-              selectedVideoSource.cheatCount > 4
-                ? "red"
-                : selectedVideoSource.cheatCount > 0
-                  ? "yellow"
-                  : "green"
-            }
-          >
-            {selectedVideoSource.cheatCount}
-          </Badge>
-        </Group>
+          <video
+            src={selectedVideoSource.srcScreen}
+            autoPlay
+            loop
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              borderRadius: "8px",
+              objectFit: "cover",
+              aspectRatio: "16/9",
+              minHeight: 0,
+            }}
+          />
+          <Text ta="center" mt="sm">
+            Screen
+          </Text>
+        </Paper>
+        {/* Right video: Webcam */}
+        <Paper
+          p="sm"
+          radius="8px"
+          withBorder
+          bd="1px solid grey4"
+          bg={selectedVideoSource.cheats.webcam ? "redLight" : "grey1"}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+          }}
+        >
+          <video
+            src={selectedVideoSource.srcWebcam}
+            autoPlay
+            loop
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              borderRadius: "8px",
+              objectFit: "cover",
+              aspectRatio: "16/9",
+              minHeight: 0,
+            }}
+          />
+          <Text ta="center" mt="sm">
+            Webcam
+          </Text>
+        </Paper>
       </Flex>
-    </Paper>
+    </Flex>
   ) : (
     <Paper
       radius="8px"
       p="xs"
       bg="grey1"
+      bd="1px solid grey4"
       style={{
         height: "100%",
         display: "flex",
         flexDirection: "column",
         minHeight: 0,
       }}
-      {...props}
       withBorder
-      bd="1px solid grey4"
     >
       <Center style={{ flex: 1 }}>
         <Group>
-          <IconPointer color={theme.colors.blue[1]} size="1.8rem"/>
-          <Text size="1.5rem" c="blue" fw={700}>
-            Select a user to view their video
+          <IconPointer color={theme.colors.blue[1]} size="1.5rem" />
+          <Text size="1.2rem" color="blue" fw={700}>
+            Select a user to inspect their webcam, screen, audio, cheat logs, and to send a message.
           </Text>
         </Group>
       </Center>

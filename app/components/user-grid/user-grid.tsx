@@ -20,7 +20,7 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
             <Paper
               radius="8px"
               p="xs"
-              bg={user.cheatCurrently ? 'redLight' : 'grey1'}
+              bg={(user.cheats.audio || user.cheats.screen || user.cheats.webcam) ? 'redLight' : 'grey1'}
               withBorder
               style={{
                 height: '100%',
@@ -29,6 +29,7 @@ export default function UserVideoGrid({ selectedUserName, onUserSelect, videoSou
                 minHeight: 0,
                 border: user.userName === selectedUserName ? `3px solid ${theme.colors.blue[1]}` : `1px solid ${theme.colors.grey4[1]}`,
               }}
+              shadow='xl'
             >
               {/* Flex container to arrange videos side by side */}
               <Flex

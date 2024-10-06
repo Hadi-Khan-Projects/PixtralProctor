@@ -3,5 +3,9 @@ export type VideoSource = {
   srcScreen: string;
   userName: string;
   cheatCount: number;
-  cheatCurrently: boolean;
+  cheats: {
+    audio: boolean;
+    webcam: boolean;
+    screen: boolean;
+  };
 };
